@@ -1,0 +1,9 @@
+packages/
+QBert.Model/bin/
+QBert.Model/obj/
+QBert.Repository/bin/
+QBert.Repository/obj/
+QBert.Tests/bin/
+QBert.Tests/obj/
+QBert/bin/
+QBert/obj/
