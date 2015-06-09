@@ -39,7 +39,7 @@ namespace BBQ.Controllers
             {
                 if(_qRepo==null)
                 {
-                    _qRepo = RepositoryFactory.createQueueRepository();
+                    _qRepo = RepositoryFactory.createQueueRepository(AccountID);
                 }
                 return _qRepo;
             }
@@ -56,7 +56,7 @@ namespace BBQ.Controllers
             {
                 if (_mRepo == null)
                 {
-                    _mRepo = RepositoryFactory.createMessageRepository();
+                    _mRepo = RepositoryFactory.createMessageRepository(AccountID);
                 }
                 return _mRepo;
             }
@@ -73,7 +73,7 @@ namespace BBQ.Controllers
             {
                 if (_aRepo == null)
                 {
-                    _aRepo = RepositoryFactory.createAuthorizationRepository();
+                    _aRepo = RepositoryFactory.createAuthorizationRepository(AccountID);
                 }
                 return _aRepo;
             }
