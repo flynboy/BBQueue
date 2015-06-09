@@ -56,7 +56,7 @@ namespace BBQ.Repository.Memory
         {
             lock(_locker)
             {
-                var m = Messages.Where(q => q.AccountID == AccountID && q.QueueID == QueueID)
+                var m = Messages.Where(q => q.AccountID == AccountID && q.QueueID == QueueID && q.Status== MessageStatus.Pending)
                             .OrderBy(q=>q.TimeStamp)
                             .FirstOrDefault();
                 if(m!=null)

@@ -47,7 +47,7 @@ namespace BBQ.Controllers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost, Route("")]
         public Queue Add([FromBody]Queue value)
         {
             value.AccountID = AccountID;
@@ -56,14 +56,14 @@ namespace BBQ.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut]
-        public bool Save(Guid id, [FromBody]Queue value)
+        [HttpPut, Route("{ID}")]
+        public bool Save(Guid ID, [FromBody]Queue value)
         {
             return QueueRepository.Save(value);
         }
 
         // DELETE api/values/5
-        [HttpDelete]
+        [HttpDelete, Route("{ID}")]
         public bool Delete(Guid ID)
         {
             return QueueRepository.Delete(ID);
