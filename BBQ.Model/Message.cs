@@ -23,6 +23,7 @@ namespace BBQ.Model
         public DateTime TimeStamp { get; set; }
         public int Attempted { get; set; }
         public MessageStatus Status { get; set; }
+        public DateTime StatusTimeStamp { get; set; }
 
         public object Payload { get; set; }
 
@@ -30,6 +31,7 @@ namespace BBQ.Model
         {
             ID = Guid.NewGuid();
             TimeStamp = DateTime.Now;
+            StatusTimeStamp = DateTime.Now;
             Attempted = 0;
             Status = MessageStatus.Pending;
         }

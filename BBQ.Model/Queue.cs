@@ -25,11 +25,18 @@ namespace BBQ.Model
         /// </summary>
         public int MaxAttempts { get; set; }
 
+        /// <summary>
+        /// this is the amount of time in seconds an item will wait for confirmation it was processed before it sets itself to pending
+        /// defaults to 5 minutes
+        /// </summary>
+        public long LockTimeout { get; set; }
+
         public Queue()
         {
             ID = Guid.NewGuid();
             TimeToLive = 86400; //default to 24 hours
             MaxAttempts = 10;
+            LockTimeout = 300;
         }
 
         public Queue(Guid AccountID)

@@ -9,6 +9,6 @@ namespace BBQ.Repository
 {
     public interface IAuthorizationRepository : IRepository<Account, Guid>
     {
-        bool Authorize(Guid id, string Secret);
+
     }
 }

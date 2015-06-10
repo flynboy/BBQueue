@@ -36,12 +36,17 @@ namespace BBQSauce
 
         public Message<T> Enqueue<T>(Queue q, T o)
         {
-            return api.Post<Message<T>>("Queue/" + q.ID.ToString() + "/Item", o);
+            return api.Post<Message<T>>("Queue/" + q.ID.ToString() + "/Message", o);
         }
 
         public Message<T> DeQueue<T>(Queue q)
         {
-            return api.Get<Message<T>>("Queue/" + q.ID.ToString() + "/Item");
+            return api.Get<Message<T>>("Queue/" + q.ID.ToString() + "/Message");
+        }
+
+        public bool MessageProcessed<T>(Queue q, Message<T> msg)
+        {
+            return api.Delete("Queue/" + q.ID.ToString() + "/Message/" + msg.ID.ToString());
         }
 
         private WebHelper api

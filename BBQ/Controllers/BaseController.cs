@@ -12,8 +12,11 @@ using System.Text;
 
 namespace BBQ.Controllers
 {
+    [Filters.ApiAuthorize]
     public class BaseController : ApiController
     {
+
+
         private Guid _authId { get; set; }
         public Guid AccountID
         {
@@ -21,37 +24,7 @@ namespace BBQ.Controllers
             {
                 if (_authId == Guid.Empty)
                 {
-                    if (HttpContext.Current != null)
-                    {
-                        var headers = HttpContext.Current.Request.Headers;
-                        if(headers!=null)
-                        {
-                            var Auth = headers["Authorization"];
-                            if(!string.IsNullOrEmpty(Auth))
-                            {
-                                //expects accountId:secret
-                                //base 64 encoded
-                                byte[] data = Convert.FromBase64String(Auth);
-                                string decodedString = Encoding.UTF8.GetString(data);
-
-                                if(decodedString.Contains(':'))
-                                {
-                                    var str_ar = decodedString.Split(':');
-                                    if (str_ar.Length == 2)
-                                    {                                        
-                                        var accountID = new Guid(str_ar[0]);
-                                        var secret = str_ar[1];
-
-                                        //todo:  verify accountID and secret here                                        
-
-                                        AccountID = accountID;
-                                        return accountID;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return Guid.Empty; //todo:  auth here
+                    _authId = new Guid(User.Identity.Name);
                 }
                 return _authId;
             }

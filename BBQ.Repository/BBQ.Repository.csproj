@@ -39,10 +39,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authorization\AuthenticateWithCreateIfMissing.cs" />
+    <Compile Include="Authorization\AuthTokenParser.cs" />
+    <Compile Include="Authorization\IAuthStrategy.cs" />
+    <Compile Include="Authorization\IAuthTokenParser.cs" />
     <Compile Include="IMessageRepository.cs" />
     <Compile Include="IQueueRepository.cs" />
     <Compile Include="IAuthorizationRepository.cs" />
     <Compile Include="IRepository.cs" />
+    <Compile Include="Memory\AuthRepository.cs" />
     <Compile Include="Memory\MessageRepository.cs" />
     <Compile Include="Memory\QueueRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

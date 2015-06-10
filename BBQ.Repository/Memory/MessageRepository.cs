@@ -62,6 +62,7 @@ namespace BBQ.Repository.Memory
                 if(m!=null)
                 {
                     m.Status = MessageStatus.Locked;
+                    m.StatusTimeStamp = DateTime.Now;
                     m.Attempted++;                    
                 }
 

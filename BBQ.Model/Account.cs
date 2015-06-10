@@ -17,10 +17,12 @@ namespace BBQ.Model
         public Guid ID { get; set; }
         public string Name { get; set; }
         public string Secret { get; set; }
+        public AccountStatus Status { get; set; }
 
         public Account()
         {
             ID = Guid.NewGuid();
+            Status = AccountStatus.Active;
         }
     }
 }

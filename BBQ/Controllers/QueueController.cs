@@ -71,7 +71,7 @@ namespace BBQ.Controllers
 
         #region messages
 
-        [HttpPost, Route("{QID}/Item")]
+        [HttpPost, Route("{QID}/Message")]
         public Message AddMessage(Guid QID, [FromBody]object payload)
         {
             var q = Get(QID);
@@ -89,7 +89,7 @@ namespace BBQ.Controllers
             return msg;
         }
 
-        [HttpGet, Route("{QID}/Item")]
+        [HttpGet, Route("{QID}/Message")]
         public Message GetNextMessage(Guid QID)
         {
             var q = Get(QID);

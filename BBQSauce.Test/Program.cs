@@ -26,12 +26,11 @@ namespace BBQSauce.Test
                     Name = "test1",
                     Roles = new List<string>() { "one", "two" }
                 });
-
-            var tm = result.Value;
-
+            
             var msg = bbq.DeQueue<TestMessage>(q);
             var msg2 = bbq.DeQueue<TestMessage>(q);
-            tm = msg.Value;
+
+            var removed = bbq.MessageProcessed(q, msg);
         }
     }
 }
