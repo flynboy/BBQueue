@@ -13,10 +13,9 @@ using System.Text;
 namespace BBQ.Controllers
 {
     [Filters.ApiAuthorize]
+    [Filters.CallCount]
     public class BaseController : ApiController
     {
-
-
         private Guid _authId { get; set; }
         public Guid AccountID
         {

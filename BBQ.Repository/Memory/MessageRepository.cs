@@ -69,5 +69,15 @@ namespace BBQ.Repository.Memory
                 return m;
             }
         }
+
+        public decimal Count
+        {
+            get { return Messages.Where(m => m.AccountID == AccountID).Count(); }
+        }
+
+        public decimal CountInQueue(Guid QID)
+        {
+            return Messages.Where(m => m.AccountID == AccountID && m.QueueID==QID).Count();
+        }
     }
 }

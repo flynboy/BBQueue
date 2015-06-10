@@ -11,5 +11,7 @@ namespace BBQ.Repository
     {
         Queue GetByName(string Name);
         IEnumerable<Queue> GetAll();
+
+        decimal Count { get; }
     }
 }

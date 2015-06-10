@@ -12,7 +12,7 @@ namespace BBQ.Filters
     public class ApiAuthorizeAttribute : AuthorizeAttribute
     {
         protected override bool IsAuthorized(System.Web.Http.Controllers.HttpActionContext actionContext)
-        {
+        {            
             var req = actionContext.Request;
 
             var auth = req.Headers.Authorization;
