@@ -10,7 +10,7 @@ namespace BBQ.Repository
     public interface IMessageRepository : IRepository<Message, Guid>
     {
         Message GetNextAndLock(Guid QueueID);
-        decimal Count { get; }
-        decimal CountInQueue(Guid QID);
+        decimal Count(Guid? guid= null, MessageStatus? status = null);
+        decimal AverageAge(Guid? guid = null, MessageStatus? status = null);
     }
 }

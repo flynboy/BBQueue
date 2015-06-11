@@ -70,14 +70,32 @@ namespace BBQ.Repository.Memory
             }
         }
 
-        public decimal Count
+        public decimal Count(Guid? guid = null, MessageStatus? status = null)
         {
-            get { return Messages.Where(m => m.AccountID == AccountID).Count(); }
+            var msgs = Messages.Where(m => m.AccountID == AccountID);
+            if(guid.HasValue)
+            {
+                msgs = msgs.Where(m => m.QueueID == guid.Value);
+            }
+            if(status.HasValue)
+            {
+                msgs = msgs.Where(m => m.Status == status.Value);
+            }
+            return msgs.Count();
         }
 
-        public decimal CountInQueue(Guid QID)
+        public decimal AverageAge(Guid? guid = null, MessageStatus? status = null)
         {
-            return Messages.Where(m => m.AccountID == AccountID && m.QueueID==QID).Count();
+            var msgs = Messages.Where(m => m.AccountID == AccountID);
+            if (guid.HasValue)
+            {
+                msgs = msgs.Where(m => m.QueueID == guid.Value);
+            }
+            if (status.HasValue)
+            {
+                msgs = msgs.Where(m => m.Status == status.Value);
+            }
+            return (decimal)msgs.Select(m => (DateTime.Now - m.TimeStamp).TotalSeconds).DefaultIfEmpty().Average();
         }
     }
 }

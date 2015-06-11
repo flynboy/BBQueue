@@ -43,7 +43,47 @@ namespace BBQ.Controllers
             ret.Add(new Models.Statistic()
             {
                 Name = "TotalMessages",
-                Value = MessageRepository.Count
+                Value = MessageRepository.Count()
+            });
+
+            //messages
+            ret.Add(new Models.Statistic()
+            {
+                Name = "LockedMessages",
+                Value = MessageRepository.Count(null, Model.MessageStatus.Locked)
+            });
+
+            ret.Add(new Models.Statistic()
+            {
+                Name = "AverageMessageAge",
+                Value = MessageRepository.AverageAge()
+            });
+
+            return ret;
+        }
+
+        [HttpGet, Route("Queue/{qid}")]
+        public IEnumerable<Models.Statistic> Get(Guid qid)
+        {
+            var ret = new List<Models.Statistic>();
+
+            //messages
+            ret.Add(new Models.Statistic()
+            {
+                Name = "TotalMessages",
+                Value = MessageRepository.Count(qid)
+            });
+
+            ret.Add(new Models.Statistic()
+            {
+                Name = "LockedMessages",
+                Value = MessageRepository.Count(qid, Model.MessageStatus.Locked)
+            });
+
+            ret.Add(new Models.Statistic()
+            {
+                Name = "AverageMessageAge",
+                Value = MessageRepository.AverageAge(qid)
             });
 
             return ret;
