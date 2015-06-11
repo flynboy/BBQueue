@@ -34,6 +34,18 @@ namespace BBQSauce
             return api.Get<List<Queue>>("Queue");
         }
 
+        public IEnumerable<Statistic> GetStats(Queue q = null)
+        {
+            if(q==null)
+            {
+                return api.Get<List<Statistic>>("Stats");
+            }
+            else
+            {
+                return api.Get<List<Statistic>>("Stats/Queue/"+q.ID.ToString());
+            }
+        }
+
         public Message<T> Enqueue<T>(Queue q, T o)
         {
             return api.Post<Message<T>>("Queue/" + q.ID.ToString() + "/Message", o);

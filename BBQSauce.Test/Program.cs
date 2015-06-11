@@ -27,8 +27,14 @@ namespace BBQSauce.Test
 
             //get all queues
             var bbq = new BBQ();
-
             var q = bbq.GetOrCreateQueue("testq");
+            
+            //check stats
+            var stats = bbq.GetStats();
+            displayStats(stats);
+
+            stats = bbq.GetStats(q);
+            displayStats(stats, q);
 
             for (var i = 0; i < repeat_count; i++)
             {
@@ -39,16 +45,39 @@ namespace BBQSauce.Test
                     });
             }
 
+            stats = bbq.GetStats();
+            displayStats(stats);
+
+            stats = bbq.GetStats(q);
+            displayStats(stats, q);
+
             for (var i = 0; i < repeat_count; i++)
             {
                 var msg = bbq.DeQueue<TestMessage>(q);
                 var removed = bbq.MessageProcessed(q, msg);
             }
 
+            stats = bbq.GetStats();
+            displayStats(stats);
+
+            stats = bbq.GetStats(q);
+            displayStats(stats, q);
+
             t.Stop();
 
             Console.WriteLine("Completed in {0} ms", t.ElapsedMilliseconds);
             Console.ReadKey();
+        }
+
+        private static void displayStats(IEnumerable<Statistic> stats, Queue q=null)
+        {            
+            Console.WriteLine("{0}Stats:",q!=null ? q.Name +" " : "");
+            Console.WriteLine("".PadRight(60, '-'));
+            foreach(var s in stats)
+            {
+                Console.WriteLine("{0} : {1}", s.Name, s.Value);
+            }
+            Console.WriteLine("".PadRight(60, '-'));
         }
     }
 }
