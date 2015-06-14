@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 
 using BBQ.Model;
+using Newtonsoft.Json;
 
 namespace BBQ.Controllers
 {
@@ -92,19 +93,12 @@ namespace BBQ.Controllers
         [HttpGet, Route("{QID}/Message")]
         public Message GetNextMessage(Guid QID)
         {
-            var q = Get(QID);
-            return MessageRepository.GetNextAndLock(q.ID);
+            return MessageRepository.GetNextAndLock(QID);
         }
 
         [HttpDelete, Route("{QID}/Message/{ID}")]
         public bool RemoveMessage(Guid QID, Guid ID)
         {
-            var q = Get(QID);
-
-            //get it to make sure we can access it
-            var m = MessageRepository.Get(ID);
-            if(m==null) throw new HttpResponseException(HttpStatusCode.NotFound);
-
             return MessageRepository.Delete(ID);
         }
 

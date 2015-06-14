@@ -14,7 +14,7 @@ using BBQ.Repository;
 namespace BBQ.Tests.Controllers
 {
     [TestClass]
-    public class QueueControllerTests
+    public class QueueControllerTestsMemory
     {
         public QueueController Controller
         {

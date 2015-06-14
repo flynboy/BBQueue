@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,37 +22,81 @@ namespace BBQ.Repository
             return new Authorization.AuthenticateWithCreateIfMissing();
         }
 
+        public static string getRepoSetting(string subType)
+        {
+            var baseVal = ConfigurationManager.AppSettings["BBQ.Repository"] ?? "";
+            var subVal = ConfigurationManager.AppSettings["BBQ.Repository." + subType] ?? "";
+
+            return string.IsNullOrEmpty(subVal) ? baseVal : subVal;
+        }
+
+        public static string getRepoConectionString(string subType)
+        {
+            var baseVal = ConfigurationManager.AppSettings["BBQ.Repository.ConnectionString"] ?? "";
+            var subVal = ConfigurationManager.AppSettings["BBQ.Repository." + subType + ".ConnectionString"] ?? "";
+
+            return string.IsNullOrEmpty(subVal) ? baseVal : subVal;
+        }
+
         public static IAuthorizationRepository createAuthorizationRepository(Guid AccountID)
         {
-            //todo read config and create
-            var repo = new Memory.AuthRepository();
-            var connStr = "";
+            IAuthorizationRepository repo;
 
-            if (!repo.Init(AccountID, connStr)) return null;
+            switch(getRepoSetting("Authorization").ToLower())
+            {
+                case "mongodb":
+                    repo = new MongoDb.AuthRepository();
+                    break;
+                default:
+                    repo = new Memory.AuthRepository();
+                    break;
+            }
+            
+            if(repo==null) return null;
+
+            if (!repo.Init(AccountID, getRepoConectionString("Authorization"))) return null;
             
             return repo;
         }
 
         public static IQueueRepository createQueueRepository(Guid AccountID)
         {
-            //todo:  read config and set
-            var repo = new Memory.QueueRepository();
-            var connStr = "";
+            IQueueRepository repo;
 
+            switch (getRepoSetting("Queue").ToLower())
+            {
+                case "mongodb":
+                    repo = new MongoDb.QueueRepository();
+                    break;
+                default:
+                    repo = new Memory.QueueRepository();
+                    break;
+            }
+            
+            if(repo==null) return null;
 
-            if (!repo.Init(AccountID, connStr)) return null;
-
+            if (!repo.Init(AccountID, getRepoConectionString("Queue"))) return null;
+            
             return repo;
         }
 
         public static IMessageRepository createMessageRepository(Guid AccountID)
         {
-            //todo:  read config and set
-             var repo = new Memory.MessageRepository();
-            var connStr = "";
+            IMessageRepository repo;
 
+            switch (getRepoSetting("Message").ToLower())
+            {
+                case "mongodb":
+                    repo = new MongoDb.MessageRepository();
+                    break;
+                default:
+                    repo = new Memory.MessageRepository();
+                    break;
+            }
 
-            if (!repo.Init(AccountID, connStr)) return null;
+            if (repo == null) return null;
+
+            if (!repo.Init(AccountID, getRepoConectionString("Message"))) return null;
 
             return repo;
         }

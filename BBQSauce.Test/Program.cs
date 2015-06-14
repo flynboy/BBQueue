@@ -16,6 +16,10 @@ namespace BBQSauce.Test
             const int repeat_count = 100;
 
             Stopwatch t = new Stopwatch();
+            Stopwatch add = new Stopwatch();
+            Stopwatch get = new Stopwatch();
+            Stopwatch commit = new Stopwatch();
+
             t.Start();
 
             BBQ.BaseUri = @"http://localhost:58397/";
@@ -38,11 +42,13 @@ namespace BBQSauce.Test
 
             for (var i = 0; i < repeat_count; i++)
             {
+                add.Start();
                 var result = bbq.Enqueue(q, new TestMessage()
                     {
                         Name = "test1",
                         Roles = new List<string>() { "one", "two" }
                     });
+                add.Stop();
             }
 
             stats = bbq.GetStats();
@@ -53,8 +59,12 @@ namespace BBQSauce.Test
 
             for (var i = 0; i < repeat_count; i++)
             {
+                get.Start();
                 var msg = bbq.DeQueue<TestMessage>(q);
+                get.Stop();
+                commit.Start();
                 var removed = bbq.MessageProcessed(q, msg);
+                commit.Stop();
             }
 
             stats = bbq.GetStats();
@@ -66,6 +76,10 @@ namespace BBQSauce.Test
             t.Stop();
 
             Console.WriteLine("Completed in {0} ms", t.ElapsedMilliseconds);
+            Console.WriteLine("Adds {0} ms, Avg {1} ms", add.ElapsedMilliseconds, add.ElapsedMilliseconds / repeat_count);
+            Console.WriteLine("Gets {0} ms, Avg {1} ms", get.ElapsedMilliseconds, get.ElapsedMilliseconds / repeat_count);
+            Console.WriteLine("Commits {0} ms, Avg {1} ms", commit.ElapsedMilliseconds, commit.ElapsedMilliseconds / repeat_count);
+
             Console.ReadKey();
         }
 
