@@ -187,6 +187,87 @@ namespace BBQ.Tests.Controllers
             Assert.IsNull(controller.MessageRepository.Get(m.ID));
         }
 
+        //test message timeouts and locks
+        [TestMethod]
+        public void message_lock_expiration()
+        {
+            var controller = Controller;
+            controller.SuppressTimeoutProcessing = true; //allow for explicit processing
+
+            var q = new Queue()
+                {
+                    LockTimeout = 1
+                };
+            Assert.IsNotNull(controller.Add(q));
+
+            Assert.IsNotNull(controller.AddMessage(q.ID, 42));
+            var m = controller.GetNextMessage(q.ID);
+            Assert.IsNull(controller.GetNextMessage(q.ID));
+
+            //now wait a second then process timeouts.  this should unlock the item and it should be available
+            System.Threading.Thread.Sleep(1500);
+            controller.ProcessTimeouts(q.ID);
+
+            var m2 = controller.GetNextMessage(q.ID);
+            Assert.IsNotNull(m2);
+
+            Assert.AreEqual(m2.ID, m.ID);
+        }
+
+        [TestMethod]
+        public void message_expiration()
+        {
+            var controller = Controller;
+            controller.SuppressTimeoutProcessing = true; //allow for explicit processing
+
+            var q = new Queue()
+            {
+                TimeToLive=1
+            };
+            Assert.IsNotNull(controller.Add(q));
+
+            Assert.IsNull(controller.QueueRepository.GetByName("SYSTEM_EXPIRED"));
+
+            Assert.IsNotNull(controller.AddMessage(q.ID, 42));
+
+            //now wait a second then process timeouts.  this should expire the item and put it in the SYSTEM_EXPIRED queue
+            System.Threading.Thread.Sleep(1500);
+            controller.ProcessTimeouts(q.ID);
+            
+            Assert.IsNull(controller.GetNextMessage(q.ID));
+
+            var expired_queue = controller.QueueRepository.GetByName("SYSTEM_EXPIRED");
+            Assert.AreEqual(controller.MessageRepository.Count(expired_queue.ID), 1); 
+        }
+
+        [TestMethod]
+        public void message_retry_exceeded()
+        {
+            var controller = Controller;
+            controller.SuppressTimeoutProcessing = true; //allow for explicit processing
+
+            var q = new Queue()
+            {
+                MaxAttempts = 0,
+                LockTimeout = 1,
+            };
+            Assert.IsNotNull(controller.Add(q));
+
+            Assert.IsNull(controller.QueueRepository.GetByName("SYSTEM_POISON"));
+
+            Assert.IsNotNull(controller.AddMessage(q.ID, 42));
+            Assert.IsNotNull(controller.GetNextMessage(q.ID));
+
+            //now wait a second then process timeouts.  this should expire the item and put it in the SYSTEM_EXPIRED queue
+            System.Threading.Thread.Sleep(1500);
+            controller.ProcessTimeouts(q.ID);
+
+            Assert.IsNull(controller.GetNextMessage(q.ID));
+
+            var poison_queue = controller.QueueRepository.GetByName("SYSTEM_POISON");
+            Assert.AreEqual(controller.MessageRepository.Count(poison_queue.ID), 1);
+        }
+
         #endregion
     }
 }

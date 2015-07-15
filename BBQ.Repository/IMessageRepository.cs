@@ -12,5 +12,13 @@ namespace BBQ.Repository
         Message GetNextAndLock(Guid QueueID);
         decimal Count(Guid? guid= null, MessageStatus? status = null);
         decimal AverageAge(Guid? guid = null, MessageStatus? status = null);
+
+        bool UnlockIfLockedBeforeDateTime(Guid QID, DateTime lockTime);
+
+        IList<Message> GetRetryExceededItems(Guid QID, int tries);
+
+        bool MoveMessagesToQueue(IList<Message> msgs, Queue move_to_queue);
+
+        IList<Message> GetItemsLastModifiedBefore(Guid QID, DateTime dateTime);
     }
 }
