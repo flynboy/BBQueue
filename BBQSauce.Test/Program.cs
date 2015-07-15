@@ -11,6 +11,19 @@ namespace BBQSauce.Test
 {
     class Program
     {
+        public class TestMessage
+        {
+            public Guid ID { get; set; }
+            public string Name { get; set; }
+            public List<string> Roles { get; set; }
+
+            public TestMessage()
+            {
+                ID = Guid.NewGuid();
+                Roles = new List<string>();
+            }
+        }
+
         static void Main(string[] args)
         {
             const int repeat_count = 100;
@@ -22,7 +35,7 @@ namespace BBQSauce.Test
 
             t.Start();
 
-            BBQ.BaseUri = @"http://localhost:58397/";
+            BBQ.BaseUri = @"https://services/Queue/v1/";
             BBQ.AccountID = Guid.NewGuid().ToString();
             BBQ.Secret = DateTime.Now.Ticks.ToString();
 
