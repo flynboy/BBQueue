@@ -61,7 +61,6 @@ namespace BBQ.Repository.Memory
             return true;
         }
 
-
         public decimal Count
         {
             get

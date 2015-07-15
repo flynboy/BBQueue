@@ -97,5 +97,50 @@ namespace BBQ.Repository.Memory
             }
             return (decimal)msgs.Select(m => (DateTime.Now - m.TimeStamp).TotalSeconds).DefaultIfEmpty().Average();
         }
+
+        public bool UnlockIfLockedBeforeDateTime(Guid QID, DateTime lockTime)
+        {
+            var msgs = Messages.Where(m => m.AccountID == AccountID
+                                        && m.QueueID == QID
+                                        && m.Status == MessageStatus.Locked 
+                                        && m.StatusTimeStamp < lockTime)
+                                    .ToList();
+            foreach(var m in msgs)
+            {
+                m.Status = MessageStatus.Pending;
+                m.StatusTimeStamp = DateTime.Now;
+            }
+
+            return true;
+        }
+
+        public IList<Message> GetRetryExceededItems(Guid QID, int tries)
+        {
+            return Messages.Where(m => m.AccountID == AccountID
+                                        && m.QueueID == QID
+                                        && m.Attempted > tries)
+                                    .ToList();
+        }
+
+        public bool MoveMessagesToQueue(IList<Message> msgs, Queue move_to_queue)
+        {
+            foreach(var msg in msgs)
+            {
+                var move_message = Messages.SingleOrDefault(m => m.AccountID == AccountID
+                                                                && m.ID == msg.ID);
+                if (move_message == null) return false;
+                move_message.QueueID = move_to_queue.ID;
+            }
+            return true;
+        }
+
+
+        public IList<Message> GetItemsLastModifiedBefore(Guid QID, DateTime dateTime)
+        {
+            return Messages.Where(m => m.AccountID == AccountID
+                                        && m.QueueID == QID
+                                        && m.StatusTimeStamp < dateTime)
+                                    .ToList();
+        }
     }
 }
