@@ -64,7 +64,8 @@ namespace BBQ.Repository.MongoDb
             {
                 filter = filter & Builders<Model.Message>.Filter.Eq(m => m.Status, status.Value);
             }
-            return Messages.CountAsync(filter).Result;
+
+            return Messages.CountAsync(filter).Result;  
         }
 
         public decimal AverageAge(Guid? guid = null, MessageStatus? status = null)
@@ -78,7 +79,40 @@ namespace BBQ.Repository.MongoDb
             {
                 filter = filter & Builders<Model.Message>.Filter.Eq(m => m.Status, status.Value);
             }
-            return 0; //todo
+
+            var group = new BsonDocument 
+            { 
+                    { "_id", "$QueueID"},
+                    {
+                        "avg", new BsonDocument
+                        {
+                            { 
+                                "$avg" , 
+                                new BsonDocument
+                                {
+                                    {
+                                        "$subtract",
+                                        new BsonArray
+                                        {
+                                            DateTime.Now,
+                                            "$TimeStamp"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+            };
+
+            var result = Messages.Aggregate().Match(filter).Group(group).ToListAsync().Result;
+            if (result == null || result.Count < 1) return 0;
+
+            try
+            {
+                var val = result.First()["avg"].AsDouble;
+                return (decimal)(val / 1000.0);
+            }
+            catch { return 0; }            
         }
 
         public bool UnlockIfLockedBeforeDateTime(Guid QID, DateTime lockTime)
